@@ -13,34 +13,34 @@ class player: #Where the players are made
 
     def __init__(self, dict):
         #All pos names
-        self.names = ['Liam', 'Olivia', 'Noah', 'Emma', 'Oliver', 'Ava', 'Elijah', 'characterlotte', 'William', 'Sophia', 'James', 'Amelia', 'Benjamin', 'Isabella', 'Lucas', 'Mia', 'Henry', 'Evelyn', 'Alexander', 'Harper', 'Travis', 'Frank']
+        self.names = ['Liam', 'Olivia', 'Noah', 'Emma', 'Oliver', 'Ava', 'Elijah', 'Charlotte', 'William', 'Sophia', 'James', 'Amelia', 'Benjamin', 'Isabella', 'Lucas', 'Mia', 'Henry', 'Evelyn', 'Alexander', 'Harper', 'Travis', 'Frank']
         #if the player did not add any name or age
         if dict == {}:
             #make one
-            self.character = {
+            self.char = {
                         'name': r.choice(self.names), #get a random name
                         'age': r.randint(13,72), #random age
                         'score': 0, #Set the score to 0
                         'pc': False #and that it is an AI
                         }
         elif dict != {}: #If they did have something
-            self.character = {
+            self.char = {
                         'name': dict['name'], #Set the name to what they inputed
                         'age': dict['age'], #Set the age to their input
                         'score': 0, #Set score to 0
-                        'pc': True #and set that it is a player controled characterictor
+                        'pc': True #and set that it is a player controled charictor
                         }
-        if self.character['name'] == 'Frank': #If the dumb dumb named themself Frank he diserves no points
-            self.character['score'] = -1000000000
-        elif self.character['name'] == 'Travis': #If the god is named Travis
-            self.character['score'] = 1000000000000000000000000000000000000000000 #Then all the points
+        if self.char['name'] == 'Frank': #If the dumb dumb named themself Frank he diserves no points
+            self.char['score'] = -1000000000
+        elif self.char['name'] == 'Travis': #If the god is named Travis
+            self.char['score'] = 1000000000000000000000000000000000000000000 #Then all the points
 
     def printstuff(self):
         #print the name their score and if they are player controled
-        print(f"{self.character['name']}, {self.character['age']}: With {self.character['score']} points. Player Controled: {self.character['pc']}")
+        print(f"{self.char['name']}, {self.char['age']}: With {self.char['score']} points. Player Controled: {self.char['pc']}")
 
     def pointchange(self, input): #A point changing deff
-        self.character['score'] += input #Changing it whatever is needed
+        self.char['score'] += input #Changing it whatever is needed
 
 def playersetup(players, player): #Fuction to set up players
     setup = True
@@ -116,8 +116,8 @@ def pickalet(type, guessedlet, cphr, player): #Picking let function for both vow
     while True:
         #print(plist)
         newp = False; count = 0
-        if player.character['pc']: inp = str.lower(input(f"What {type} do you want?\n")) #If it is a player get their input
-        elif not player.character['pc']: inp = r.choice(plist) #If ai get random
+        if player.char['pc']: inp = str.lower(input(f"What {type} do you want?\n")) #If it is a player get their input
+        elif not player.char['pc']: inp = r.choice(plist) #If ai get random
         if inp in plist and inp not in guessedlet: #If it is not in guessed and is in the possible letters
             guessedlet.append(inp) #add it to guessed
             if inp in cphr: #if it is in the cphr
@@ -147,7 +147,7 @@ def wheelspin(player, guessedlet, cphr): #The wheel spin stuff
     if landon == 'Lose a Turn': #If they lost a turn then get a new player
         newp = True
     elif landon == 'Bankrupt': #if they went bankrupt
-        player.character['score'] = 0 #Set there score to 0
+        player.char['score'] = 0 #Set there score to 0
     return guessedlet, newp, player
 
 def bavowel (player, guessedlet, cphr): #Buying a vowel
@@ -168,7 +168,7 @@ def bavowel (player, guessedlet, cphr): #Buying a vowel
 
 def solving(player, cphr): #Solving the puzzle
     playing = True; newp = False
-    if player.character['pc']: #If it is a player
+    if player.char['pc']: #If it is a player
         inp = str.lower(input("What do you think the phrase is?\n")) #Get what they think the cphyer is
         if inp == str.lower(cphr): #if there input is the cphyer
             playing = False #they are no longer playing
@@ -176,7 +176,7 @@ def solving(player, cphr): #Solving the puzzle
         else:
             print("That is not what the cypher is.") #if it isnt tell them
             newp = True #get new player
-    elif not player.character['pc']: #If it is ai
+    elif not player.char['pc']: #If it is ai
         count = countlet(cphr, "_") #Get how many unknown lets there are
         if count < 3: #if it is less then 3
             playing = False #no longer playign
@@ -189,17 +189,17 @@ playing = prcph(guessedlet, cphr, players[0]) #get playing and print the cphyer
 while playing:
     newp = False
     #If it is a player get what they want to do
-    if players[cplayer].character['pc']: choice = str.lower(input(f"Does {players[cplayer].character['name']} want to\n(1) Spin the Wheel,\n(2) Buy a Vowel,\n(3) Solve the puzzle,\n(4) See Stats and Stuff\n "))
+    if players[cplayer].char['pc']: choice = str.lower(input(f"Does {players[cplayer].char['name']} want to\n(1) Spin the Wheel,\n(2) Buy a Vowel,\n(3) Solve the puzzle,\n(4) See Stats and Stuff\n "))
     #If AI do random thing
-    elif not players[cplayer].character['pc']: choice = str(r.randint(1,3))
+    elif not players[cplayer].char['pc']: choice = str(r.randint(1,3))
     #If it is a 1 then do wheel spin
     if choice == "1": guessedlet, newp, players[cplayer] = wheelspin(players[cplayer], guessedlet, cphr)
     #if buy vowel
     elif choice == "2":
         #Buy the vowel as long as they have more then 200 points
-        if players[cplayer].character['score'] > 200: guessedlet, newp, players[cplayer] = bavowel (players[cplayer], guessedlet, cphr)
+        if players[cplayer].char['score'] > 200: guessedlet, newp, players[cplayer] = bavowel (players[cplayer], guessedlet, cphr)
         #If they dont tell player
-        elif players[cplayer].character['score'] < 200: print("You need more the 200 points.")
+        elif players[cplayer].char['score'] < 200: print("You need more the 200 points.")
     #If solve do that
     elif choice == "3": players[cplayer], playing, newp = solving(players[cplayer], cphr)
     #If want stats
@@ -214,18 +214,18 @@ while playing:
     elif not playing: #if not playing
         top = [0, 'name']
         for i in players: #For everyone
-            if i.character['score'] > top[0]: #Find highest score
-                top[0] = i.character['score'] #do set it
+            if i.char['score'] > top[0]: #Find highest score
+                top[0] = i.char['score'] #do set it
                 top[1] = i #set there name
-            elif i.character['score'] > 0 and i.character['score'] == top[0]: #If tie
+            elif i.char['score'] > 0 and i.char['score'] == top[0]: #If tie
                 top[1] = [top[1], i]
         if type(top[1]) == list: #if there is a tie
             people = []
             for i in top[1]: #Get the people
-                people.append(i.character['name']) #add the name
+                people.append(i.char['name']) #add the name
             print(f"There was a tie between {str(people)} with {top[0]} points") #print who had a tie
         else:
-            print(f"{top[1].character['name']} Won the game with {top[0]} points") #If no tie print winner
+            print(f"{top[1].char['name']} Won the game with {top[0]} points") #If no tie print winer
         #ask if play again
         userinp = str.lower(input("Do you want to play again? (\033[1;33my\033[1;0m, \033[1;31mn\033[1;0m)\n"))
         if userinp == "y": #if they do

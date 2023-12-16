@@ -225,7 +225,7 @@ while playing:
                 people.append(i.character['name']) #add the name
             print(f"There was a tie between {str(people)} with {top[0]} points") #print who had a tie
         else:
-            print(f"{top[1].character['name']} Won the game with {top[0]} points") #If no tie print winner
+            print(f"{top[1].character['name']} Won the game with {top[0]} points") #If no tie print winer
         #ask if play again
         userinp = str.lower(input("Do you want to play again? (\033[1;33my\033[1;0m, \033[1;31mn\033[1;0m)\n"))
         if userinp == "y": #if they do
