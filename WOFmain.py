@@ -1,239 +1,246 @@
 #Libs
-import random as r, colorama as c, time as t
+import random, colorama as c, time as t
 
 c.init()
 
-#all posible phrases
 phrases = ['The best of both worlds', 'Speak of the devil', 'See eye to eye', 'Once in a blue moon', 'When pigs fly', 'To cost an arm and a leg', 'A piece of cake', 'Let the cat out of the bag', 'To feel under the weather', 'To kill two birds with one stone', 'To cut corners', 'To add insult to injury', 'You can\'t judge a book by its cover', 'Break a leg', 'To hit the nail on the head', 'A blessing in disguise', 'Call it a day', 'Let someone off the hook', 'No pain no gain', 'Bite the bullet', 'Getting a taste of your own medicine', 'Giving someone the cold shoulder', 'The last straw', 'The elephant in the room', 'Stealing someones thunder']
-players = [] #Where the players made in the class will be stored
-guessedlet = [" ", ",", "'", ] #Where all guessed letters will be stored
-cplayer = 0
+players = []
+guessed_letters = [" ", ",", "'", ]
+current_player = 0
 
-class player: #Where the players are made
+class player:
 
-    def __init__(self, dict):
-        #All pos names
-        self.names = ['Liam', 'Olivia', 'Noah', 'Emma', 'Oliver', 'Ava', 'Elijah', 'characterlotte', 'William', 'Sophia', 'James', 'Amelia', 'Benjamin', 'Isabella', 'Lucas', 'Mia', 'Henry', 'Evelyn', 'Alexander', 'Harper', 'Travis', 'Frank']
-        #if the player did not add any name or age
-        if dict == {}:
-            #make one
+    def __init__(self, given_dict):
+        if given_dict == {}:
             self.character = {
-                        'name': r.choice(self.names), #get a random name
-                        'age': r.randint(13,72), #random age
-                        'score': 0, #Set the score to 0
-                        'pc': False #and that it is an AI
+                        'name': random.choice(['Liam', 'Olivia', 'Noah', 'Emma', 'Oliver', 'Ava', 'Elijah', 'Characterlotte', 'William', 'Sophia', 'James', 'Amelia', 'Benjamin', 'Isabella', 'Lucas', 'Mia', 'Henry', 'Evelyn', 'Alexander', 'Harper', 'Travis', 'Frank']), #get a random name
+                        'age': random.randint(13,72),
+                        'score': 0,
+                        'ai': True
                         }
-        elif dict != {}: #If they did have something
-            self.character = {
-                        'name': dict['name'], #Set the name to what they inputed
-                        'age': dict['age'], #Set the age to their input
-                        'score': 0, #Set score to 0
-                        'pc': True #and set that it is a player controled characterictor
-                        }
-        if self.character['name'] == 'Frank': #If the dumb dumb named themself Frank he diserves no points
+        elif given_dict != {}: self.character = given_dict
+
+        if self.character['name'] == 'Frank':
             self.character['score'] = -1000000000
-        elif self.character['name'] == 'Travis': #If the god is named Travis
-            self.character['score'] = 1000000000000000000000000000000000000000000 #Then all the points
+        elif self.character['name'] == 'Travis':
+            self.character['score'] = 1000000000000000000000000000000000000000000
 
-    def printstuff(self):
-        #print the name their score and if they are player controled
-        print(f"{self.character['name']}, {self.character['age']}: With {self.character['score']} points. Player Controled: {self.character['pc']}")
+    def __str__(self):
+        return f"{self.character['name']}, {self.character['age']}: With {self.character['score']} points. Player Controled: {not self.character['ai']}"
 
-    def pointchange(self, input): #A point changing deff
-        self.character['score'] += input #Changing it whatever is needed
+    def add_points(self, input):
+        print(f"add {input}")
+        self.character['score'] += input
 
-def playersetup(players, player): #Fuction to set up players
+def player_setup(players):
     setup = True
-    while setup and len(players) < 3:
-        dict = {'name': "", 'age': 0} #set the dictionary to start
-        #Ask if they want to set up a player
-        userinp = str.lower(input("Do you want to set up a player? (\033[1;33my\033[1;0m, \033[1;31mn\033[1;0m)\n"))
-        if userinp == "y": #If they do
-            while True:
-                inp = input("What is their name?\n") #Get the name they want
-                if inp == "": #if there name is empty
-                    print("Please put a name") #make them add a name
-                elif inp != "":
-                    dict['name'] = inp #Setting there name
-                    if not inp.isalpha(): #If there is anything that is not a number
-                        print("Intoresting name!") #coment on the intoresting name
-                    break
-            while True:
-                inp = input("How old are they?\n") #get the age they want
-                if not inp.isalpha(): #Make sure it is a number
-                    if int(inp) > 0:
-                        dict['age'] = int(inp)#Seting the age part of the dict to an int
-                        if int(inp) > 90: #If they are old
-                            print("You old fart sure you want to play this game?") #Tell them
-                        elif int(inp) < 15: #If young
-                            print("Ya ankle biter sure you want to be here?") #Tell them
-                    else: print("\033[1;31mMake that age over 0\033[1;0m") #If no age make them input one
-                    players.append(player(dict)) #Getting a player
-                    players[-1].printstuff()
-                    break
-                elif inp.isalpha(): #If it is not a number
-                    if inp == "yo mama": #If they make there age yo mama
-                        dict['age'] = 1000000000000000000000000000000000 #Make them soooooooooooooo old
-                    else: print("\033[1;31mPlease put their age as a number.\033[1;0m") #Through an error
-        elif userinp == "n": #if they dont then kick out of the loop
-            setup = False
-        else: print("\033[1;31mError, try inputing again\033[1;0m") #If they didn't do a y or n then print an error
-    for i in range(len(players),3): #if they kicked out before making 3 moves then
-        players.append(player({})) #make as meny as needed
-playersetup(players, player)
+    while True:
+        user_input = str.lower(input("Do you want to set up a player? (\033[1;33my\033[1;0m, \033[1;31mn\033[1;0m)\n"))
+        if user_input == "y" or user_input == "n":
+            break
+        else: print("\033[1;31mError, try inputing again\033[1;0m")
+            
+    while setup and len(players) < 3 and user_input == "y":
+        base_dict = {'name': "", 'age': 0, 'score': 0, 'ai': False}
+        #Get an clean up name input
+        while True:
+            name_input = input("What is your name?\n")
+            if name_input == "":
+                print("\033[1;31mPlease input a name\033[1;0m")
+            elif name_input != "":
+                base_dict['name'] = name_input
+                if not name_input.isalpha():
+                    print("Intoresting name!")
+                break
+        #Get and cleanup age input
+        while True:
+            age_input = input("How old are you?\n")
+            if age_input.isnumeric() and int(age_input) > 0:
+                base_dict['age'] = int(age_input)
+                if int(age_input) > 90:
+                    print("You old fart sure you want to play this game?") 
+                elif int(age_input) < 15:
+                    print("Ya ankle bitter sure you want to be here?")
+                break
+            else:
+                if age_input == "yo mama":
+                    base_dict['age'] = 1000000000000000000000000000000000
+                elif not age_input.isnumeric():
+                    print("\033[1;31mPlease put their age as a number.\033[1;0m")
+                elif age_input.isnumeric() and int(age_input) <= 0:
+                    print("\033[1;31mPlease input a number greater than 0\033[1;0m")
+                else: 
+                    print("\033[1;31mERROR\033[1;0m")
+        #init a new player and add it to the end of the list of players
+        players.append(player(base_dict))
+        print(players[-1])
+        while True:
+            user_input = str.lower(input("Do you want to set up a player? (\033[1;33my\033[1;0m, \033[1;31mn\033[1;0m)\n"))
+            if user_input == "y" or user_input == "n":
+                break
+            elif user_input == "n": #if they dont then kick out of the loop
+                setup = False
+            else: print("\033[1;31mError, try inputing again\033[1;0m")
 
-def prcph(guessed, cphr, person): #print the cypher
-    playing = False
-    for i in cphr:
-        if i not in guessed: #If it is not guessed
-            cphr = cphr.replace(i, "_") #c.Fore.WHITE + c.Back.WHITE + i + c.Fore.RESET + c.Back.RESET
-            playing = True
-        elif guessed != [] and i != " " and i != "'" and i == guessed[-1]: #If it is the newest guessed
-            cphr = cphr.replace(i, c.Back.GREEN + i + c.Back.RESET) #Make it green so the player knows
-    if not playing:
-        person.pointchange(5000) #if it is done add points
-    print(cphr) #Print it
-    return playing
+    #Finish filling out the list of players with AI's
+    for i in range(len(players), 3):
+        players.append(player({}))
 
-def newplayer(index): #The player index loop
-    if index == 2: return 0 #If it is on the last player set index to 0
-    elif index < 2: return index + 1 #else return the index +1
+def print_cypher(guessed_letters, cypher, person):
+    won = True
+    for letter in cypher:
+        if letter not in guessed_letters:
+            cypher = cypher.replace(letter, "_") #c.Fore.WHITE + c.Back.WHITE + i + c.Fore.RESET + c.Back.RESET
+            won = False
+        elif guessed_letters != [] and letter != " " and letter != "'" and letter == guessed_letters[-1]:
+            cypher = cypher.replace(letter, c.Back.GREEN + letter + c.Back.RESET)
+    if won:
+        person.add_points(5000)
+    print(cypher)
+    return won
 
-def countlet(cphr, guessed): #counting how many letters there are in word
-    count = 0
-    for i in cphr: #For everything in the word
-        if i == guessed: count += 1 #if it is the guessed then incroment guessed
-    print(f"There is {count} '{guessed}'(s) in the puzzle.") #print how many there are
+def next_player(index):
+    if index < 2: return index + 1
+    elif index == 2: return 0
+
+#counting how many letters there are in word
+def count_letter(cypher, guessed_letter): 
+    count = sum(1 for letter in cypher if letter == guessed_letter)
+    print(f"There is {count} '{guessed_letter}'(s) in the puzzle.")
     return count
 
-def pickalet(type, guessedlet, cphr, player): #Picking let function for both vowels and constanents
-    lettertypes = [list('euioa'), list('qwrtypsdfghjklzxcvbnm')] #all the constanents
-    if type == 'vowel': #if it is the vowel
-        plist = lettertypes[0] #Set the list to the first set 0f lets
-    elif type == 'consonant': #if you need a consonant
-        plist = lettertypes[1] #set the list to the second one
-    else: print("\033[1;31mIncompatable letter type\033[1;0m") #Else print error
+def letter_picker(type, guessed_letters, cypher, player):
+    letter_list = {'vowel': list('euioa'), 'consonant': list('qwrtypsdfghjklzxcvbnm')}[type]
     while True:
         #print(plist)
-        newp = False; count = 0
-        if player.character['pc']: inp = str.lower(input(f"What {type} do you want?\n")) #If it is a player get their input
-        elif not player.character['pc']: inp = r.choice(plist) #If ai get random
-        if inp in plist and inp not in guessedlet: #If it is not in guessed and is in the possible letters
-            guessedlet.append(inp) #add it to guessed
-            if inp in cphr: #if it is in the cphr
-                newp = False
-                count = countlet(cphr, guessedlet[-1]) #then count
-            elif inp not in cphr: #if not
-                newp = True #You need a new player
-                print(f"There are no '{inp}'(s)") #tell the player
-            return guessedlet, newp, count
-        elif inp not in plist: #If it is not a possible let
-            print(f"Please do a {type}") #Tell them to get a correct let
-        elif inp in guessedlet: #if guessed
-            print("You already guessed that") #Tell player
+        new_player_needed = False
+        letter_count = 0
+        if not player.character['ai']: 
+            letter_input = str.lower(input(f"What {type} do you want?\n"))
+        elif player.character['ai']: 
+            letter_input = random.choice(letter_list)
+        if letter_input in letter_list and letter_input not in guessed_letters:
+            guessed_letters.append(letter_input)
+            if letter_input in cypher:
+                new_player_needed = False
+                letter_count = count_letter(cypher, guessed_letters[-1])
+            elif letter_input not in cypher:
+                new_player_needed = True
+                print(f"There are no '{letter_input}'(s)")
+            return guessed_letters, new_player_needed, letter_count
+        elif letter_input not in letter_list:
+            print(f"Please do a {type}")
+        elif letter_input in guessed_letters:
+            print("You already guessed that")
 
-def wheelspin(player, guessedlet, cphr): #The wheel spin stuff
+def wheel_spin(player, guessed_letters, cypher):
     wheel = ['Lose a Turn', 800, 500, 650, 500, 900, 'Bankrupt', 5000, 500, 600, 700, 600, 650, 500, 700, 500, 600, 550, 500, 600, 'Bankrupt', 650, 700, 'Lose a Turn']
-    rest = 0.01; newp = False
+    rest = 0.01
     while rest < 0.7:
-        landon = r.choice(wheel) #Get a random choice
-        print(landon, "\033[?25l                    ", end = "\r") #Print landed on remove curser and remove preveus line
-        t.sleep(rest) #rest for how ever long
-        rest *= 1.1 #make rest longer
-    print('\033[?25h') #add curser
-    if type(landon) == int:
-        guessedlet, newp, count = pickalet('consonant', guessedlet, cphr, player) #Pick a let
-        player.pointchange(int(landon)*int(count)) #How ever many of that let*there points
-    if landon == 'Lose a Turn': #If they lost a turn then get a new player
-        newp = True
-    elif landon == 'Bankrupt': #if they went bankrupt
-        player.character['score'] = 0 #Set there score to 0
-    return guessedlet, newp, player
+        landed_on = random.choice(wheel)
+        print(landed_on, "\033[?25l                    ", end = "\r")
+        t.sleep(rest)
+        rest *= 1.1
+    print('\033[?25h')
+    if type(landed_on) == int:
+        guessed_letters, new_player_needed, count = letter_picker('consonant', guessed_letters, cypher, player)
+        print(f"Land_on {landed_on}, count {count}")
+        player.add_points(landed_on*count)
+    if landed_on == 'Lose a Turn':
+        new_player_needed = True
+    elif landed_on == 'Bankrupt':
+        player.character['score'] = 0
+        new_player_needed = False
+    return guessed_letters, new_player_needed, player
 
-def bavowel (player, guessedlet, cphr): #Buying a vowel
-    newp = False
-    for i in list('euioa'): #for every vowel
-        if i in guessedlet: #if it is in guessed
-            done = True #Done still equals true
-        else:
-            done = False #if there is one let that isnt then done equals false and break
-            break
+def buy_vowel(player, guessed_letters, cypher):
+    new_player_needed = False
+    done = all(letter in guessed_letters for letter in list('euioa'))
     if done:
-        print("There are no more vowels to buy") #if done then tell player
+        print("There are no more vowels to buy")
     else:
-        guessedlet, newp, count = pickalet('vowel', guessedlet, cphr, player) #Get a let
-        player.pointchange(-200) #Remove 200 points
-        player.printstuff() #print the players stuff
-    return guessedlet, newp, player
+        guessed_letters, new_player_needed, count = letter_picker('vowel', guessed_letters, cypher, player)
+        player.add_points(-200)
+        print(player)
+    return guessed_letters, new_player_needed, player
 
-def solving(player, cphr): #Solving the puzzle
-    playing = True; newp = False
-    if player.character['pc']: #If it is a player
-        inp = str.lower(input("What do you think the phrase is?\n")) #Get what they think the cphyer is
-        if inp == str.lower(cphr): #if there input is the cphyer
-            playing = False #they are no longer playing
-            player.pointchange(5000) #Add 5k points
-        else:
-            print("That is not what the cypher is.") #if it isnt tell them
-            newp = True #get new player
-    elif not player.character['pc']: #If it is ai
-        count = countlet(cphr, "_") #Get how many unknown lets there are
-        if count < 3: #if it is less then 3
-            playing = False #no longer playign
-            player.printstuff() #print the cpther
-            print(f"Guessed the prase, they guessed {cphr}") #Tell player
-    return player, playing, newp
+def solve_cypher(player, cypher):
+    won = False
+    new_player_needed = False
+    if (not player.character['ai'] and str.lower(input("What do you think the phrase is?\n")) == str.lower(cypher)) or (player.character['ai'] and random.randint(0, len(cypher)) == len(cypher)):
+        won = True 
+        player.add_points(5000)
+        print(f"{player}\nGOT IT, the cypher was \"{cypher}\"")
+    else:
+        print("That is not what the cypher is.")
+        new_player_needed = True
+    return player, won, new_player_needed
 
-cphr = str.lower(r.choice(phrases)) #get the starting cphr
-playing = prcph(guessedlet, cphr, players[0]) #get playing and print the cphyer
-while playing:
-    newp = False
-    #If it is a player get what they want to do
-    if players[cplayer].character['pc']: choice = str.lower(input(f"Does {players[cplayer].character['name']} want to\n(1) Spin the Wheel,\n(2) Buy a Vowel,\n(3) Solve the puzzle,\n(4) See Stats and Stuff\n "))
-    #If AI do random thing
-    elif not players[cplayer].character['pc']: choice = str(r.randint(1,3))
-    #If it is a 1 then do wheel spin
-    if choice == "1": guessedlet, newp, players[cplayer] = wheelspin(players[cplayer], guessedlet, cphr)
-    #if buy vowel
-    elif choice == "2":
-        #Buy the vowel as long as they have more then 200 points
-        if players[cplayer].character['score'] > 200: guessedlet, newp, players[cplayer] = bavowel (players[cplayer], guessedlet, cphr)
-        #If they dont tell player
-        elif players[cplayer].character['score'] < 200: print("You need more the 200 points.")
-    #If solve do that
-    elif choice == "3": players[cplayer], playing, newp = solving(players[cplayer], cphr)
-    #If want stats
-    elif choice == "4":
-        print(str(guessedlet)) #print guessed lets
-        for i in players: i.printstuff() #print the player sats for everyone
-    elif choice == "show": #If haxs
-        print(cphr) #Print the cphyer
-    else: print("\033[1;31mError, try inputing again\033[1;0m") #if not any of thoughs then error
-    if newp: cplayer = newplayer(cplayer) #If new player needed then get that
-    if playing: playing = prcph(guessedlet, cphr, players[cplayer]) #if they are playing print cphyer
-    elif not playing: #if not playing
+player_setup(players)
+
+cypher = str.lower(random.choice(phrases)) #get the starting cypher
+won = False
+#won = print_cypher(guessed_letters, cypher, players[0]) #get playing and print the cphyer
+
+while not won:
+    won = print_cypher(guessed_letters, cypher, players[current_player])
+    new_player_needed = False
+
+    if players[current_player].character['ai']: 
+        choice = random.randint(1,3)
+        print(f"{players[current_player]} chose: {choice}")
+    while True and not players[current_player].character['ai']:
+        choice = str.lower(input(f"Do you (\033[1;33mplayer{current_player+1}\033[1;0m) want to\n(1) Spin the Wheel,\n(2) Buy a Vowel,\n(3) Solve the puzzle,\n(4) See Stats and Stuff\n "))
+        if choice.isnumeric():
+            choice = int(choice)
+            break
+        elif choice == "show":
+            print(cypher)
+        else: 
+            print("\033[1;31mError, try inputing again\033[1;0m")
+
+    match choice:
+        case 1: #Spin wheel
+            guessed_letters, new_player_needed, players[current_player] = wheel_spin(players[current_player], guessed_letters, cypher)
+        case 2: #buy vowel
+            if players[current_player].character['score'] > 200: 
+                guessed_letters, new_player_needed, players[current_player] = buy_vowel(players[current_player], guessed_letters, cypher)
+            elif players[current_player].character['score'] < 200: 
+                print("You need more the 200 points.")
+        case 3: #solve
+            players[current_player], won, new_player_needed = solve_cypher(players[current_player], cypher)
+        case 4: #print stats
+            print(str(guessed_letters))
+            for person in players: print(person)
+            
+    if new_player_needed: 
+        current_player = next_player(current_player)
+
+    
+    if won:
         top = [0, 'name']
-        for i in players: #For everyone
-            if i.character['score'] > top[0]: #Find highest score
-                top[0] = i.character['score'] #do set it
-                top[1] = i #set there name
-            elif i.character['score'] > 0 and i.character['score'] == top[0]: #If tie
-                top[1] = [top[1], i]
-        if type(top[1]) == list: #if there is a tie
-            people = []
-            for i in top[1]: #Get the people
-                people.append(i.character['name']) #add the name
-            print(f"There was a tie between {str(people)} with {top[0]} points") #print who had a tie
+        for current_player in players:
+            if current_player.character['score'] > top[0]:
+                top[0] = current_player.character['score']
+                top[1] = current_player.character['name']
+            elif current_player.character['score'] > 0 and current_player.character['score'] == top[0]:
+                top[1] = [top[1], current_player['name']]
+        if type(top[1]) == list:
+            print(f"There was a tie between {", ".join(top[1])} with {top[0]} points")
         else:
-            print(f"{top[1].character['name']} Won the game with {top[0]} points") #If no tie print winner
-        #ask if play again
-        userinp = str.lower(input("Do you want to play again? (\033[1;33my\033[1;0m, \033[1;31mn\033[1;0m)\n"))
-        if userinp == "y": #if they do
-            players = [] #Where the players made in the class will be stored
-            guessedlet = [] #Where all guessed letters will be stored
-            cplayer = 0
-            cphr = r.choice(phrases) #get new phrase
-            playing = prcph(guessedlet, cphr, cplayer) #print it
-        elif userinp == "n": #if not
-            print("Ok bye have fun, with out me :(") #be sad
-    t.sleep(0.5) #make slower
+            print(f"{top[1]} Won the game with {top[0]} points")
+
+        while True:
+            userinp = str.lower(input("Do you want to play again? (\033[1;33my\033[1;0m, \033[1;31mn\033[1;0m)\n"))
+            if userinp == "y":
+                players = []
+                guessed_letters = []
+                current_player = 0
+                cypher = random.choice(phrases)
+                won = print_cypher(guessed_letters, cypher, current_player)
+            elif userinp == "n":
+                print("Ok bye have fun, with out me :(")
+                break
+            else:
+                print("Please input y or n")
+    t.sleep(0.5)
