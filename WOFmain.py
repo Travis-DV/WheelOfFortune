@@ -13,7 +13,7 @@ class player:
     def __init__(self, given_dict):
         if given_dict == {}:
             self.character = {
-                        'name': random.choice(['Liam', 'Olivia', 'Noah', 'Emma', 'Oliver', 'Ava', 'Elijah', 'Characterlotte', 'William', 'Sophia', 'James', 'Amelia', 'Benjamin', 'Isabella', 'Lucas', 'Mia', 'Henry', 'Evelyn', 'Alexander', 'Harper', 'Travis', 'Frank']), #get a random name
+                        'name': random.choice(['Liam', 'Olivia', 'Noah', 'Emma', 'Oliver', 'Ava', 'Elijah', 'Characterlotte', 'William', 'Sophia', 'James', 'Amelia', 'Benjamin', 'Isabella', 'Lucas', 'Mia', 'Henry', 'Evelyn', 'Alexander', 'Harper']), #get a random name
                         'age': random.randint(13,72),
                         'score': 0,
                         'ai': True
@@ -92,6 +92,7 @@ def print_cypher(guessed_letters, cypher, person):
         if letter not in guessed_letters:
             cypher = cypher.replace(letter, "_") #c.Fore.WHITE + c.Back.WHITE + i + c.Fore.RESET + c.Back.RESET
             won = False
+            print(letter)
         elif guessed_letters != [] and letter != " " and letter != "'" and letter == guessed_letters[-1]:
             cypher = cypher.replace(letter, c.Back.GREEN + letter + c.Back.RESET)
     if won:
@@ -104,8 +105,14 @@ def next_player(index):
     elif index == 2: return 0
 
 #counting how many letters there are in word
-def count_letter(cypher, guessed_letter): 
+def count_letter(cypher, guessed_letter, guessed_letters): 
+    cypher2 = list(cypher)
     count = sum(1 for letter in cypher if letter == guessed_letter)
+    if guessed_letter == '_':
+        for letter in cypher:
+            if letter in guessed_letters:
+                cypher2.remove(letter)
+        return len(cypher2)
     print(f"There is {count} '{guessed_letter}'(s) in the puzzle.")
     return count
 
@@ -123,7 +130,7 @@ def letter_picker(type, guessed_letters, cypher, player):
             guessed_letters.append(letter_input)
             if letter_input in cypher:
                 new_player_needed = False
-                letter_count = count_letter(cypher, guessed_letters[-1])
+                letter_count = count_letter(cypher, guessed_letters[-1], guessed_letters)
             elif letter_input not in cypher:
                 new_player_needed = True
                 print(f"There are no '{letter_input}'(s)")
@@ -167,7 +174,8 @@ def buy_vowel(player, guessed_letters, cypher):
 def solve_cypher(player, cypher):
     won = False
     new_player_needed = False
-    if (not player.character['ai'] and str.lower(input("What do you think the phrase is?\n")) == str.lower(cypher)) or (player.character['ai'] and random.randint(0, len(cypher)) == len(cypher)):
+    count = count_letter(cypher, "_", guessed_letters)
+    if (not player.character['ai'] and str.lower(input("What do you think the phrase is?\n")) == str.lower(cypher)) or (player.character['ai'] and random.randint(0, count) == count):
         won = True 
         player.add_points(5000)
         print(f"{player}\nGOT IT, the cypher was \"{cypher}\"")
@@ -183,11 +191,12 @@ won = False
 #won = print_cypher(guessed_letters, cypher, players[0]) #get playing and print the cphyer
 
 while not won:
-    won = print_cypher(guessed_letters, cypher, players[current_player])
+    if players != []:
+        won = print_cypher(guessed_letters, cypher, players[current_player])
     new_player_needed = False
 
     if players[current_player].character['ai']: 
-        choice = random.randint(1,3)
+        choice = random.randint(1,2)
         print(f"{players[current_player]} chose: {choice}")
     while True and not players[current_player].character['ai']:
         choice = str.lower(input(f"Do you (\033[1;33mplayer{current_player+1}\033[1;0m) want to\n(1) Spin the Wheel,\n(2) Buy a Vowel,\n(3) Solve the puzzle,\n(4) See Stats and Stuff\n "))
